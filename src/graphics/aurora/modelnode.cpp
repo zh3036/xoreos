@@ -141,6 +141,16 @@ Common::TransformationMatrix ModelNode::getAsolutePosition() const {
 	return absolutePosition;
 }
 
+void ModelNode::getWorldPosition(float &x, float &y, float &z) const {
+	Common::TransformationMatrix pos = _model->_absolutePosition;
+
+	pos.transform(_absolutePosition);
+
+	x = pos.getX();
+	y = pos.getY();
+	z = pos.getZ();
+}
+
 void ModelNode::setPosition(float x, float y, float z) {
 	lockFrameIfVisible();
 
