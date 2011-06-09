@@ -216,6 +216,22 @@ void Model::getAbsolutePosition(float &x, float &y, float &z) const {
 	z = _absolutePosition.getZ();
 }
 
+void Model::getCenter(float &x, float &y, float &z) {
+	x = _center[0] * _scale[0];
+	y = _center[1] * _scale[1];
+	z = _center[2] * _scale[2];
+}
+
+void Model::getAbsoluteCenter(float &x, float &y, float &z) {
+	Common::TransformationMatrix center = _absolutePosition;
+
+	center.translate(_center[0], _center[1], _center[2]);
+
+	x = center.getX();
+	y = center.getY();
+	z = center.getZ();
+}
+
 void Model::setScale(float x, float y, float z) {
 	lockFrameIfVisible();
 
