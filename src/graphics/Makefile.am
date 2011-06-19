@@ -35,6 +35,7 @@ noinst_HEADERS = \
                  types.h \
                  util.h \
                  graphics.h \
+                 lightman.h \
                  fpscounter.h \
                  icon.h \
                  cursor.h \
@@ -56,6 +57,7 @@ noinst_HEADERS = \
 
 libgraphics_la_SOURCES = \
                          graphics.cpp \
+                         lightman.cpp \
                          fpscounter.cpp \
                          icon.cpp \
                          cursor.cpp \
