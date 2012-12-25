@@ -30,6 +30,7 @@
 #include "src/common/types.h"
 #include "src/common/singleton.h"
 #include "src/common/mutex.h"
+#include "src/common/transmatrix.h"
 
 #include "src/graphics/types.h"
 
@@ -76,13 +77,18 @@ public:
 
 	/** Create a lighting. */
 	LightingHandle createLighting();
-	/** Evaluate the lightings for this position. */
+	/** Evaluate the lighting for this position. */
 	void evaluateLighting(LightingHandle &lighting, float x, float y, float z);
+	/** Update all lightings. */
+	void updateLighting();
 
 	// To be called from the renderer in the main thread.
 
+	void setCamera(const Common::TransformationMatrix &camera);
+
 	void showLights();
 	void renderLights();
+	void renderLights(const LightingHandle &lighting);
 
 private:
 	struct Light {
@@ -101,6 +107,8 @@ private:
 
 	struct Lighting {
 		uint32 referenceCount;
+
+		float position[3];
 
 		std::list<LightHandle> lights;
 
@@ -122,11 +130,15 @@ private:
 	LightList _lights;
 	LightingList _lightings;
 
+	Common::TransformationMatrix _camera;
+
 
 	void assign(LightHandle &light, const LightHandle &from);
 	void assign(LightingHandle &lighting, const LightingHandle &from);
 	void release(LightHandle &light);
 	void release(LightingHandle &lighting);
+
+	void evaluateLighting(Lighting &lighting);
 
 
 	friend class LightHandle;

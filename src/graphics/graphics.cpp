@@ -42,6 +42,7 @@
 
 #include "src/graphics/graphics.h"
 #include "src/graphics/util.h"
+#include "src/graphics/lightman.h"
 #include "src/graphics/icon.h"
 #include "src/graphics/cursor.h"
 #include "src/graphics/fpscounter.h"
@@ -988,6 +989,17 @@ bool GraphicsManager::renderWorld() {
 	memcpy(cPos   , CameraMan.getPosition   (), 3 * sizeof(float));
 	memcpy(cOrient, CameraMan.getOrientation(), 3 * sizeof(float));
 
+	Common::TransformationMatrix camera;
+
+	// Apply camera orientation
+	camera.rotate(-cOrient[0], 1.0f, 0.0f, 0.0f);
+	camera.rotate(-cOrient[1], 0.0f, 1.0f, 0.0f);
+	camera.rotate(-cOrient[2], 0.0f, 0.0f, 1.0f);
+
+	// Apply camera position
+	camera.translate(-cPos[0], -cPos[1], -cPos[2]);
+
+
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 
@@ -1032,12 +1044,18 @@ bool GraphicsManager::renderWorld() {
 		static_cast<Renderable *>(*o)->advanceTime(elapsedTime);
 	}
 
+	LightMan.setCamera(camera);
+	LightMan.renderLights();
+
 	// Draw opaque objects
 	for (std::list<Queueable *>::const_reverse_iterator o = objects.rbegin();
 	     o != objects.rend(); ++o) {
 
 		glPushMatrix();
-		static_cast<Renderable *>(*o)->render(kRenderPassOpaque);
+
+		Renderable *r = static_cast<Renderable *>(*o);
+		r->render(kRenderPassOpaque);
+
 		glPopMatrix();
 	}
 
@@ -1046,9 +1064,15 @@ bool GraphicsManager::renderWorld() {
 	     o != objects.rend(); ++o) {
 
 		glPushMatrix();
-		static_cast<Renderable *>(*o)->render(kRenderPassTransparent);
+
+		Renderable *r = static_cast<Renderable *>(*o);
+		r->render(kRenderPassTransparent);
+
 		glPopMatrix();
 	}
+
+	glDisable(GL_LIGHTING);
+	LightMan.showLights();
 
 	QueueMan.unlockQueue(kQueueVisibleWorldObject);
 	return true;

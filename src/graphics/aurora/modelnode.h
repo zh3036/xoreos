@@ -33,6 +33,7 @@
 #include "src/common/boundingbox.h"
 
 #include "src/graphics/types.h"
+#include "src/graphics/lightman.h"
 #include "src/graphics/indexbuffer.h"
 #include "src/graphics/vertexbuffer.h"
 
@@ -132,6 +133,9 @@ protected:
 	VertexBuffer _vertexBuffer; ///< Node geometry vertex buffer.
 	IndexBuffer _indexBuffer;   ///< Node geometry index buffer.
 
+	// Vertex lighting
+	std::vector<LightingHandle> _lighting; ///< Lighting handles.
+
 	float _center     [3]; ///< The node's center.
 	float _position   [3]; ///< Position of the node.
 	float _rotation   [3]; ///< Node rotation.
@@ -210,6 +214,8 @@ private:
 
 	void orderChildren();
 
+	void clearLights();
+	void evaluateLights(Common::TransformationMatrix position);
 	void renderGeometry();
 	void renderGeometryNormal();
 	void renderGeometryEnvMappedUnder();

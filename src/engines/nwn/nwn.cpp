@@ -37,6 +37,8 @@
 
 #include "src/events/events.h"
 
+#include "src/graphics/lightman.h"
+
 #include "src/graphics/aurora/textureman.h"
 #include "src/graphics/aurora/cursorman.h"
 #include "src/graphics/aurora/fontman.h"
@@ -128,6 +130,8 @@ void NWNEngine::run() {
 		return;
 
 	CursorMan.showCursor();
+
+	LightMan.enableLighting(true);
 
 	_game = new Game(*this, *_console, *_version);
 	_game->run();
