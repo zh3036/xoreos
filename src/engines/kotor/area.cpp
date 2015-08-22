@@ -396,8 +396,15 @@ void Area::processEventQueue() {
 			if (e->key.keysym.sym == SDLK_TAB)
 				highlightAll(true);
 		} else if (e->type == Events::kEventKeyUp) {   // Releasing TAB
-			if (e->key.keysym.sym == SDLK_TAB)
+			if (e->key.keysym.sym == SDLK_TAB) {
 				highlightAll(false);
+			} else if (e->key.keysym.sym == SDLK_m) {
+				checkActive();
+				playNextAnimation();
+			} else if (e->key.keysym.sym == SDLK_n) {
+				checkActive();
+				playPreviousAnimation();
+			}
 		}
 	}
 
@@ -452,6 +459,24 @@ void Area::click(int x, int y) {
 		return;
 
 	o->click(_module->getPC());
+}
+
+void Area::playNextAnimation() {
+	Common::StackLock lock(_mutex);
+
+	if (!_activeObject)
+		return;
+
+	_activeObject->playNextAnimation();
+}
+
+void Area::playPreviousAnimation() {
+	Common::StackLock lock(_mutex);
+
+	if (!_activeObject)
+		return;
+
+	_activeObject->playPreviousAnimation();
 }
 
 void Area::highlightAll(bool enabled) {

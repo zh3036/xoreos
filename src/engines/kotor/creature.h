@@ -76,6 +76,9 @@ public:
 	/** The creature was clicked. */
 	bool click(Object *triggerer = 0);
 
+	void playNextAnimation();
+	void playPreviousAnimation();
+
 private:
 	/** Parts of a creature's body. */
 	struct PartModels {
@@ -92,6 +95,9 @@ private:
 	uint32 _appearance; ///< The creature's general appearance.
 
 	Graphics::Aurora::Model *_model; ///< The creature's model. */
+
+	std::list<Common::UString> _modelStates;
+	std::list<Common::UString>::const_iterator _currentModelState;
 
 
 	void init();
